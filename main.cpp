@@ -31,6 +31,7 @@ void linkNodes     (tree_node_t* parent, tree_node_t* left, tree_node_t* right);
 bool isNodeHaveLeft(tree_node_t* node);
 bool isNodeHaveRight(tree_node_t* node);
 //----------------------------------------------------------------------------
+void createNodeViz(tree_node_t* node, const char* nodeName, FILE* fileViz);
 void treeViz(tree_t* tree, const char* vizFileName);
 //----------------------------------------------------------------------------
 int main(){
@@ -133,9 +134,12 @@ bool isNodeHaveRight(tree_node_t* node){
     return false;
 }
 //----------------------------------------------------------------------------
-void createNodeViz(tree_node_t* node, const char* vizFileName){
+void createNodeViz(tree_node_t* node, const char* nodeName, FILE* fileViz){
     assert(node);
-    assert(vizFileName);
+    assert(nodeName);
+    assert(fileViz);
+
+    fprintf(fileViz, "%s[];\n", nodeName);
 
 }
 //----------------------------------------------------------------------------
@@ -147,11 +151,11 @@ void treeViz(tree_t* tree, const char* vizFileName){
     assert(vizFile);
 
     tree_node_t* currentNode = tree->root;
-    int i = 0;
     fprintf(vizFile, "digraph{\n");
-    if(isNodeHaveLeft(currentNode) || isNodeHaveRight(currentNode)){
-        fprintf(vizFile, "  node%d[];\n", i);
-    }
+    createNodeViz(tree->root, "node1", vizFile);
+    createNodeViz((tree->root)->left, "node2", vizFile);
+    createNodeViz((tree->root)->right, "node3", vizFile);
+    
     fprintf(vizFile, "}");
 
     fclose(vizFile);
