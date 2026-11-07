@@ -1,36 +1,37 @@
 #include <stdio.h>
 #include <malloc.h>
 #include <assert.h>
+
+typedef int tree_data_type;
 //----------------------------------------------------------------------------
 struct tree_node_t{
-    int data;
+    tree_data_type data;
     tree_node_t* left;
     tree_node_t* right;
     tree_node_t* parent;
 };
-
+//----------------------------------------------------------------------------
 struct tree_t{
     tree_node_t* root;
     int height;
 };
 //----------------------------------------------------------------------------
 tree_node_t* createNode();
-void nodeInit   (tree_node_t* node, int data, tree_node_t* left, tree_node_t* right, tree_node_t* parent);
+void nodeInit   (tree_node_t* node, tree_data_type data, tree_node_t* left, tree_node_t* right, tree_node_t* parent);
 void deleteNode (tree_node_t* node);
 //----------------------------------------------------------------------------
-void setNodeData   (tree_node_t* node, int data);
+void setNodeData   (tree_node_t* node, tree_data_type data);
 void setNodeLeft   (tree_node_t* node, tree_node_t* left);
 void setNodeRight  (tree_node_t* node, tree_node_t* right);
 void setNodeParent (tree_node_t* node, tree_node_t* parent);
+void linkNodes     (tree_node_t* parent, tree_node_t* left, tree_node_t* right);
 //----------------------------------------------------------------------------
 int main(){
     tree_node_t* node1 = createNode();
     tree_node_t* node2 = createNode();
     tree_node_t* node3 = createNode();
 
-    nodeInit(node1, 50, node2, node3, NULL);
-    nodeInit(node2, 20, NULL, NULL, node1);
-    nodeInit(node3, 60, NULL, NULL, node1);
+    linkNodes(node1, node2, node3);
 
 
     return 0;
@@ -59,7 +60,7 @@ void deleteNode(tree_node_t* node){
     return;
 }
 //----------------------------------------------------------------------------
-void nodeInit(tree_node_t* node, int data, tree_node_t* left, tree_node_t* right, tree_node_t* parent){
+void nodeInit(tree_node_t* node, tree_data_type data, tree_node_t* left, tree_node_t* right, tree_node_t* parent){
     assert(node);
 
     node->data = data;
@@ -70,7 +71,7 @@ void nodeInit(tree_node_t* node, int data, tree_node_t* left, tree_node_t* right
     return;
 }
 //----------------------------------------------------------------------------
-void setNodeData(tree_node_t* node, int data){
+void setNodeData(tree_node_t* node, tree_data_type data){
     assert(node);
     node->data = data;
     return;
@@ -97,9 +98,22 @@ void setNodeParent(tree_node_t* node, tree_node_t* parent){
     return;
 }
 //----------------------------------------------------------------------------
-void treeViz(tree_node_t* node){
+void linkNodes(tree_node_t* parent, tree_node_t* left, tree_node_t* right){
+    assert(parent);
+    assert(left && right);
+    
+    if(left != NULL){
+        setNodeLeft   (parent, left);
+        setNodeParent (left, parent);
+    }
+    if(right != NULL){
+        setNodeRight  (parent, right);
+        setNodeParent (right, parent);
+    }
+}
+//----------------------------------------------------------------------------
+void treeViz(tree_node_t* node, const char* vizFileName){
     assert(node);
-
-
+    assert(vizFileName);
     return;
 }
