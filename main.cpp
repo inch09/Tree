@@ -1,7 +1,9 @@
 #include <stdio.h>
 #include <malloc.h>
 #include <assert.h>
-
+//----------------------------------------------------------------------------
+#define TO_STR(arg) #arg
+//----------------------------------------------------------------------------
 typedef int tree_data_type;
 //----------------------------------------------------------------------------
 struct tree_node_t{
@@ -26,12 +28,19 @@ void setNodeRight  (tree_node_t* node, tree_node_t* right);
 void setNodeParent (tree_node_t* node, tree_node_t* parent);
 void linkNodes     (tree_node_t* parent, tree_node_t* left, tree_node_t* right);
 //----------------------------------------------------------------------------
+bool isNodeHaveLeft(tree_node_t* node);
+bool isNodeHaveRight(tree_node_t* node);
+//----------------------------------------------------------------------------
+void treeViz(tree_t* tree, const char* vizFileName);
+//----------------------------------------------------------------------------
 int main(){
     tree_node_t* node1 = createNode();
     tree_node_t* node2 = createNode();
     tree_node_t* node3 = createNode();
+    tree_t tree = {node1, 0};
 
     linkNodes(node1, node2, node3);
+    treeViz(&tree, "listViz.txt");
 
 
     return 0;
@@ -112,8 +121,39 @@ void linkNodes(tree_node_t* parent, tree_node_t* left, tree_node_t* right){
     }
 }
 //----------------------------------------------------------------------------
-void treeViz(tree_node_t* node, const char* vizFileName){
+bool isNodeHaveLeft(tree_node_t* node){
+    assert(node);
+    if(node->left != NULL) return true;
+    return false;
+}
+//----------------------------------------------------------------------------
+bool isNodeHaveRight(tree_node_t* node){
+    assert(node);
+    if(node->right != NULL) return true;
+    return false;
+}
+//----------------------------------------------------------------------------
+void createNodeViz(tree_node_t* node, const char* vizFileName){
     assert(node);
     assert(vizFileName);
+
+}
+//----------------------------------------------------------------------------
+void treeViz(tree_t* tree, const char* vizFileName){
+    assert(tree);
+    assert(vizFileName);
+
+    FILE* vizFile = fopen(vizFileName, "w");
+    assert(vizFile);
+
+    tree_node_t* currentNode = tree->root;
+    int i = 0;
+    fprintf(vizFile, "digraph{\n");
+    if(isNodeHaveLeft(currentNode) || isNodeHaveRight(currentNode)){
+        fprintf(vizFile, "  node%d[];\n", i);
+    }
+    fprintf(vizFile, "}");
+
+    fclose(vizFile);
     return;
 }
