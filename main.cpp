@@ -34,7 +34,9 @@ void createNodeViz(tree_node_t* node, FILE* vizFile);
 void createEdgeViz(tree_node_t* node, FILE* vizFile);
 void treeViz(tree_t* tree, FILE* vizFile);
 //----------------------------------------------------------------------------
-void print(tree_node_t* node);
+void createPreOrder(tree_node_t* node, FILE* preOrderFile);
+//----------------------------------------------------------------------------
+int countNodes(FILE* preOrderFile);
 //----------------------------------------------------------------------------
 int main(){
     tree_node_t* node1 = createNode();
@@ -56,9 +58,15 @@ int main(){
     FILE* treeVizFile = fopen("tree_viz.txt", "w");
     assert(treeVizFile);
     treeViz(&tree, treeVizFile);
-    //treeViz(&tree, "listViz.txt");
-
     fclose(treeVizFile);
+
+    FILE* preOrderFile = fopen("pre_order.txt", "w");
+    assert(preOrderFile);
+    createPreOrder(tree.root, preOrderFile);
+    rewind(preOrderFile);
+    printf("%d", countNodes(preOrderFile));
+    fclose(preOrderFile);
+
     return 0;
 }
 //----------------------------------------------------------------------------
@@ -153,9 +161,7 @@ void createNodeViz(tree_node_t* node, FILE* vizFile){
     assert(node);
     assert(vizFile);
 
-    //static int numOfNode = 0;
     fprintf(vizFile, "node%p[shape = Mrecord, label = \"data = " SPECIFIER "\"];\n", (void*) node, node->data);
-    // numOfNode++;
 
     if(isNodeHaveLeft(node))  createNodeViz(node->left, vizFile); 
     if(isNodeHaveRight(node)) createNodeViz(node->right, vizFile);
@@ -187,4 +193,52 @@ void treeViz(tree_t* tree, FILE* vizFile){
     createNodeViz(tree->root, vizFile);
     createEdgeViz(tree->root, vizFile);
     fprintf(vizFile, "}");
+}
+//----------------------------------------------------------------------------
+void createPreOrder(tree_node_t* node, FILE* preOrderFile){
+    assert(node);
+    assert(preOrderFile);
+
+    fprintf(preOrderFile, "( ");
+    fprintf(preOrderFile, SPECIFIER, node->data);
+
+    if(isNodeHaveLeft(node) || isNodeHaveRight(node)){
+
+    if(isNodeHaveLeft (node)) createPreOrder(node->left,  preOrderFile);
+    else fprintf(preOrderFile, "#");
+
+    if(isNodeHaveRight(node)) createPreOrder(node->right, preOrderFile);
+    else fprintf(preOrderFile, "#");
+
+    }
+
+    fprintf(preOrderFile, ")");
+}
+//----------------------------------------------------------------------------
+void preOrderParsing(FILE* preOrderFile){
+    assert(preOrderFile);
+
+    char symbol = fgetc(preOrderFile);
+    if(symbol == EOF){
+        return;
+    }
+}
+//----------------------------------------------------------------------------
+int countNodes(FILE* preOrderFile){
+    assert(preOrderFile);
+
+    int countOpeningBrackets = 0; 
+    int countCloseBrackets = 0;
+
+    while(true){
+
+    char symbol = fgetc(preOrderFile);
+    if(symbol == EOF){
+        if(countOpeningBrackets != countCloseBrackets) return -1;
+        else return countOpeningBrackets;
+    }
+    if(symbol == '(') countOpeningBrackets++;
+    if(symbol == ')') countCloseBrackets++;
+
+    }
 }
