@@ -31,6 +31,7 @@ bool isNodeHaveLeft  (tree_node_t* node);
 bool isNodeHaveRight (tree_node_t* node); 
 //----------------------------------------------------------------------------
 void createNodeViz(tree_node_t* node, FILE* vizFile);
+void createEdgeViz(tree_node_t* node, FILE* vizFile);
 void treeViz(tree_t* tree, FILE* vizFile);
 //----------------------------------------------------------------------------
 void print(tree_node_t* node);
@@ -142,12 +143,26 @@ void createNodeViz(tree_node_t* node, FILE* vizFile){
     assert(node);
     assert(vizFile);
 
-    static int numOfNode = 0;
-    fprintf(vizFile, "node%d[shape = Mrecord, label = \"data = " SPECIFIER "\"];\n", numOfNode, node->data);
-    numOfNode++;
+    //static int numOfNode = 0;
+    fprintf(vizFile, "node%p[shape = Mrecord, label = \"data = " SPECIFIER "\"];\n", (void*) node, node->data);
+    // numOfNode++;
 
     if(isNodeHaveLeft(node))  createNodeViz(node->left, vizFile); 
     if(isNodeHaveRight(node)) createNodeViz(node->right, vizFile); 
+}
+//----------------------------------------------------------------------------
+void createEdgeViz(tree_node_t* node, FILE* vizFile){
+    assert(node);
+    assert(vizFile);
+
+    if(isNodeHaveLeft(node)){ 
+        fprintf(vizFile, "node%p->node%p;\n", (void*) node, (void*) node->left);
+        createEdgeViz(node->left, vizFile);
+    }
+    if(isNodeHaveRight(node)){ 
+        fprintf(vizFile, "node%p->node%p;\n", (void*) node, (void*) node->right);
+        createEdgeViz(node->right, vizFile);
+    }      
 }
 //----------------------------------------------------------------------------
 void treeViz(tree_t* tree, FILE* vizFile){
@@ -156,5 +171,6 @@ void treeViz(tree_t* tree, FILE* vizFile){
 
     fprintf(vizFile, "digraph{\n");
     createNodeViz(tree->root, vizFile);
+    createEdgeViz(tree->root, vizFile);
     fprintf(vizFile, "}");
 }
