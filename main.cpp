@@ -60,12 +60,15 @@ int main(){
     treeViz(&tree, treeVizFile);
     fclose(treeVizFile);
 
-    FILE* preOrderFile = fopen("pre_order.txt", "w");
-    assert(preOrderFile);
-    createPreOrder(tree.root, preOrderFile);
-    rewind(preOrderFile);
-    printf("%d", countNodes(preOrderFile));
-    fclose(preOrderFile);
+    FILE* preOrderFileWrite = fopen("pre_order.txt", "w");
+    assert(preOrderFileWrite);
+    createPreOrder(tree.root, preOrderFileWrite);
+    fclose(preOrderFileWrite);
+
+    FILE* preOrderFileRead = fopen("pre_order.txt", "r");
+    assert(preOrderFileRead);
+    printf("%d", countNodes(preOrderFileRead));
+    fclose(preOrderFileRead);
 
     return 0;
 }
@@ -218,10 +221,15 @@ void createPreOrder(tree_node_t* node, FILE* preOrderFile){
 void preOrderParsing(FILE* preOrderFile){
     assert(preOrderFile);
 
+    int countNodes = countNodes(preOrderFile);
+    tree_node_t** arrOfNodes = (tree_node_t**) calloc(countNodes, sizeof(tree_node_t*));
+
     char symbol = fgetc(preOrderFile);
     if(symbol == EOF){
+        free(arrOfNodes);
         return;
     }
+    free(arrOfNodes);
 }
 //----------------------------------------------------------------------------
 int countNodes(FILE* preOrderFile){
