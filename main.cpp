@@ -158,7 +158,11 @@ void createNodeViz(tree_node_t* node, FILE* vizFile){
     // numOfNode++;
 
     if(isNodeHaveLeft(node))  createNodeViz(node->left, vizFile); 
-    if(isNodeHaveRight(node)) createNodeViz(node->right, vizFile); 
+    if(isNodeHaveRight(node)) createNodeViz(node->right, vizFile);
+    
+    if(isNodeHaveLeft(node) && isNodeHaveRight(node)){
+        fprintf(vizFile, "{rank = same; node%p; node%p};\n", (void*) node->left, (void*) node->right);
+    }
 }
 //----------------------------------------------------------------------------
 void createEdgeViz(tree_node_t* node, FILE* vizFile){
