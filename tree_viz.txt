@@ -1,7 +1,15 @@
 digraph{
-node00D31548[shape = Mrecord, label = "data = 0"];
-node00D31560[shape = Mrecord, label = "data = 0"];
-node00D31578[shape = Mrecord, label = "data = 0"];
-node00D31548->node00D31560;
-node00D31548->node00D31578;
+node00C81548[shape = Mrecord, label = "data = 10"];
+node00C81560[shape = Mrecord, label = "data = 30"];
+node00C81590[shape = Mrecord, label = "data = 0"];
+node00C815A8[shape = Mrecord, label = "data = 0"];
+node00C81578[shape = Mrecord, label = "data = 40"];
+node00C815C0[shape = Mrecord, label = "data = 0"];
+node00C815D8[shape = Mrecord, label = "data = 0"];
+node00C81548->node00C81560;
+node00C81560->node00C81590;
+node00C81560->node00C815A8;
+node00C81548->node00C81578;
+node00C81578->node00C815C0;
+node00C81578->node00C815D8;
 }

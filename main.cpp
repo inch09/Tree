@@ -40,8 +40,18 @@ int main(){
     tree_node_t* node1 = createNode();
     tree_node_t* node2 = createNode();
     tree_node_t* node3 = createNode();
+    tree_node_t* node4 = createNode();
+    tree_node_t* node5 = createNode();
+    tree_node_t* node6 = createNode();
+    tree_node_t* node7 = createNode();
     tree_t tree = {node1, 0};
     linkNodes(node1, node2, node3);
+    linkNodes(node2, node4, node5);
+    linkNodes(node3, node6, node7);
+    setNodeData(node1, 10);
+    setNodeData(node2, 30);
+    setNodeData(node3, 40);
+
 
     FILE* treeVizFile = fopen("tree_viz.txt", "w");
     assert(treeVizFile);
@@ -115,7 +125,7 @@ void setNodeParent(tree_node_t* node, tree_node_t* parent){
 //----------------------------------------------------------------------------
 void linkNodes(tree_node_t* parent, tree_node_t* left, tree_node_t* right){
     assert(parent);
-    assert(left && right);
+    assert(left || right);
     
     if(left != NULL){
         setNodeLeft   (parent, left);
