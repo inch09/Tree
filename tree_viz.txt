@@ -1,0 +1,5 @@
+digraph{
+node0[shape = Mrecord, label = "data = 0"];
+node1[shape = Mrecord, label = "data = 0"];
+node2[shape = Mrecord, label = "data = 0"];
+}

@@ -2,9 +2,8 @@
 #include <malloc.h>
 #include <assert.h>
 //----------------------------------------------------------------------------
-#define TO_STR(arg) #arg
-//----------------------------------------------------------------------------
 typedef int tree_data_type;
+#define SPECIFIER "%d"
 //----------------------------------------------------------------------------
 struct tree_node_t{
     tree_data_type data;
@@ -31,19 +30,24 @@ void linkNodes     (tree_node_t* parent, tree_node_t* left, tree_node_t* right);
 bool isNodeHaveLeft  (tree_node_t* node);
 bool isNodeHaveRight (tree_node_t* node); 
 //----------------------------------------------------------------------------
-void createNodeViz(tree_node_t* node, const char* nodeName, FILE* fileViz);
-void treeViz(tree_t* tree, const char* vizFileName);
+void createNodeViz(tree_node_t* node, FILE* vizFile);
+void treeViz(tree_t* tree, FILE* vizFile);
+//----------------------------------------------------------------------------
+void print(tree_node_t* node);
 //----------------------------------------------------------------------------
 int main(){
     tree_node_t* node1 = createNode();
     tree_node_t* node2 = createNode();
     tree_node_t* node3 = createNode();
     tree_t tree = {node1, 0};
-
     linkNodes(node1, node2, node3);
-    treeViz(&tree, "listViz.txt");
 
+    FILE* treeVizFile = fopen("tree_viz.txt", "w");
+    assert(treeVizFile);
+    treeViz(&tree, treeVizFile);
+    //treeViz(&tree, "listViz.txt");
 
+    fclose(treeVizFile);
     return 0;
 }
 //----------------------------------------------------------------------------
@@ -134,31 +138,23 @@ bool isNodeHaveRight(tree_node_t* node){
     return false;
 }
 //----------------------------------------------------------------------------
-void createNodeViz(tree_node_t* node, const char* nodeName, FILE* vizFile){
+void createNodeViz(tree_node_t* node, FILE* vizFile){
     assert(node);
-    assert(nodeName);
     assert(vizFile);
 
-    fprintf(vizFile, "%s[];\n", nodeName);
+    static int numOfNode = 0;
+    fprintf(vizFile, "node%d[shape = Mrecord, label = \"data = " SPECIFIER "\"];\n", numOfNode, node->data);
+    numOfNode++;
 
+    if(isNodeHaveLeft(node))  createNodeViz(node->left, vizFile); 
+    if(isNodeHaveRight(node)) createNodeViz(node->right, vizFile); 
 }
 //----------------------------------------------------------------------------
-void treeViz(tree_t* tree, const char* vizFileName){
+void treeViz(tree_t* tree, FILE* vizFile){
     assert(tree);
-    assert(vizFileName);
-
-    FILE* vizFile = fopen(vizFileName, "w");
     assert(vizFile);
 
-    tree_node_t* currentNode = tree->root;
     fprintf(vizFile, "digraph{\n");
-    fprintf()
-    // createNodeViz(tree->root, "node1", vizFile);
-    // createNodeViz((tree->root)->left, "node2", vizFile);
-    // createNodeViz((tree->root)->right, "node3", vizFile);
-    
+    createNodeViz(tree->root, vizFile);
     fprintf(vizFile, "}");
-
-    fclose(vizFile);
-    return;
 }
