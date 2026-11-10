@@ -1,15 +1,9 @@
 digraph{
-node008E1548[shape = Mrecord, label = "data = 10"];
-node008E1560[shape = Mrecord, label = "data = 30"];
-node008E1590[shape = Mrecord, label = "data = 0"];
-node008E15A8[shape = Mrecord, label = "data = 0"];
-{rank = same; node008E1590; node008E15A8};
-node008E1578[shape = Mrecord, label = "data = 40"];
-node008E15C0[shape = Mrecord, label = "data = 0"];
-{rank = same; node008E1560; node008E1578};
-node008E1548->node008E1560;
-node008E1560->node008E1590;
-node008E1560->node008E15A8;
-node008E1548->node008E1578;
-node008E1578->node008E15C0;
+node00D015B8[shape = Mrecord, label = "data = 0"];
+node00D015D0[shape = Mrecord, label = "data = 0"];
+node00D015E8[shape = Mrecord, label = "data = 0"];
+node00D01600[shape = Mrecord, label = "data = 0"];
+node00D015B8->node00D015D0;
+node00D015D0->node00D015E8;
+node00D015E8->node00D01600;
 }
