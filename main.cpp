@@ -229,15 +229,6 @@ void createPreOrder(tree_node_t* node, FILE* preOrderFile){
     fprintf(preOrderFile, ")");
 }
 //----------------------------------------------------------------------------
-void preOrderParsing(FILE* preOrderFile){
-    assert(preOrderFile);
-
-    //int countNodesInTree = countNodes(preOrderFile);
-    char symbol = fgetc(preOrderFile);
-    if(symbol == EOF){
-        return;
-    }}
-//----------------------------------------------------------------------------
 int countNodes(FILE* preOrderFile){
     assert(preOrderFile);
 
@@ -282,4 +273,27 @@ size_t getFileSize(const char* fileName){
     struct stat fileInfo = {};
     stat(fileName, &fileInfo);
     return fileInfo.st_size;
+}
+//----------------------------------------------------------------------------
+void preOrderParsing(const char* strBuf){
+    assert(strBuf);
+
+    size_t bufferLen = strlen(strBuf);
+    size_t countNodes = 0;
+    tree_node_t* root = NULL:
+    tree_node_t* parentNode = NULL;
+    tree_node_t* node = NULL;
+    bool isBracketOpenNow = false;
+
+    for(int i = 0; i < bufferLen; i++){
+        if(strBuf[i] == '('){   
+            tree_node_t* node = createNode();
+            if(countNodes == 0) root = node;
+            countNodes++;
+        }
+        if(strBuf[i] == ')'){
+        }
+
+
+    }
 }
