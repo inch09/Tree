@@ -96,7 +96,7 @@ tree_node_t* createNode(){
     return node;
 }
 //----------------------------------------------------------------------------
-void deleteNode(tree_node_t* node){
+void deleteNode(tree_node_t* node){//recursion
     assert(node);
 
     node->data = 0;
@@ -276,29 +276,26 @@ size_t getFileSize(const char* fileName){
     return fileInfo.st_size;
 }
 //----------------------------------------------------------------------------
-void preOrderParsing(const char* strBuf){
+tree_node_t* parsePreOrder(const char* strBuf){
     assert(strBuf);
 
-    size_t bufferLen = strlen(strBuf);
-    size_t countNodesTree = countNodes(strBuf);
-    assert(countNodesTree >= 0);
+    tree_node_t* node = createNode();
+    int numOfChild = 0;
+    static int i = -1;
+    i++;
 
-    (tree_node_t**) arrOfNodes = (tree_node_t**) calloc(countNodes, sizeof(tree_node_t*));
-    assert(arrOfNodes);
-
-    tree_node_t* root = NULL;
-    tree_node_t* node = NULL;
-    bool isBracketOpenNow = false;
-
-    for(int i = 0; i < bufferLen; i++){
-        if(strBuf[i] == '('){   
-            node = createNode();
-            if(countNodes == 0) root = node;
-            countNodes++;
+    while(strBuf[i] != '\0'){
+        if(strBuf[i] == '('){ 
+            numOfChild++;
+            tree_node_t* childNode = parsePreOrder(strBuf); 
+            setNodeParent(childNode, node);
+            if(numOfChild == 0) setNodeLeft (node, childNode);
+            if(numOfChild == 1) setNodeRight(node, childNode);
         }
-        if(strBuf[i] == ')'){
-        }
-
-
+        else if(strBuf[i] == ')') return node;
+        else i++;
     }
+
+    i = -1;
+    return node;
 }
