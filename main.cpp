@@ -2,6 +2,10 @@
 #include <malloc.h>
 #include <assert.h>
 //----------------------------------------------------------------------------
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <unistd.h>
+//----------------------------------------------------------------------------
 typedef int tree_data_type;
 #define SPECIFIER "%d"
 //----------------------------------------------------------------------------
@@ -37,6 +41,8 @@ void treeViz(tree_t* tree, FILE* vizFile);
 void createPreOrder(tree_node_t* node, FILE* preOrderFile);
 //----------------------------------------------------------------------------
 int countNodes(FILE* preOrderFile);
+char* createStrBuffer(const char* fileName);
+size_t getFileSize(const char* fileName);
 //----------------------------------------------------------------------------
 int main(){
     tree_node_t* node1 = createNode();
@@ -67,8 +73,13 @@ int main(){
 
     FILE* preOrderFileRead = fopen("pre_order.txt", "r");
     assert(preOrderFileRead);
-    printf("%d", countNodes(preOrderFileRead));
+    printf("%d\n", countNodes(preOrderFileRead));
     fclose(preOrderFileRead);
+
+    printf("%d\n", getFileSize("pre_order.txt"));
+    char* preOrderStr = createStrBuffer("pre_order.txt");
+    printf("%s\n", preOrderStr);
+    free(preOrderStr);
 
     return 0;
 }
@@ -221,16 +232,11 @@ void createPreOrder(tree_node_t* node, FILE* preOrderFile){
 void preOrderParsing(FILE* preOrderFile){
     assert(preOrderFile);
 
-    int countNodes = countNodes(preOrderFile);
-    tree_node_t** arrOfNodes = (tree_node_t**) calloc(countNodes, sizeof(tree_node_t*));
-
+    //int countNodesInTree = countNodes(preOrderFile);
     char symbol = fgetc(preOrderFile);
     if(symbol == EOF){
-        free(arrOfNodes);
         return;
-    }
-    free(arrOfNodes);
-}
+    }}
 //----------------------------------------------------------------------------
 int countNodes(FILE* preOrderFile){
     assert(preOrderFile);
@@ -249,4 +255,31 @@ int countNodes(FILE* preOrderFile){
     if(symbol == ')') countCloseBrackets++;
 
     }
+}
+//----------------------------------------------------------------------------
+char* createStrBuffer(const char* fileName){
+    assert(fileName);
+
+    FILE* filePtr = fopen(fileName, "r");
+    assert(filePtr);
+
+    size_t fullFileSize = getFileSize(fileName);
+    char* strBuf = (char*) calloc(fullFileSize + 1, sizeof(char));
+    assert(strBuf);
+
+    size_t realFileSize = fread(strBuf, sizeof(char), fullFileSize, filePtr);
+    realloc(strBuf, realFileSize * sizeof(char));
+    assert(strBuf);
+
+    fclose(filePtr);
+
+    return strBuf;
+}
+//----------------------------------------------------------------------------
+size_t getFileSize(const char* fileName){
+    assert(fileName);
+
+    struct stat fileInfo = {};
+    stat(fileName, &fileInfo);
+    return fileInfo.st_size;
 }
