@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <malloc.h>
 #include <assert.h>
+#include <string.h>
 //----------------------------------------------------------------------------
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -40,7 +41,7 @@ void treeViz(tree_t* tree, FILE* vizFile);
 //----------------------------------------------------------------------------
 void createPreOrder(tree_node_t* node, FILE* preOrderFile);
 //----------------------------------------------------------------------------
-int countNodes(FILE* preOrderFile);
+int countNodes(const char* strTree);
 char* createStrBuffer(const char* fileName);
 size_t getFileSize(const char* fileName);
 //----------------------------------------------------------------------------
@@ -55,7 +56,7 @@ int main(){
     tree_t tree = {node1, 0};
     linkNodes(node1, node2, node3);
     linkNodes(node2, node4, node5);
-    linkNodes(node3, node6, node7);
+    linkNodes(node3, node6, NULL);
     setNodeData(node1, 10);
     setNodeData(node2, 30);
     setNodeData(node3, 40);
@@ -219,33 +220,33 @@ void createPreOrder(tree_node_t* node, FILE* preOrderFile){
     if(isNodeHaveLeft(node) || isNodeHaveRight(node)){
 
     if(isNodeHaveLeft (node)) createPreOrder(node->left,  preOrderFile);
-    else fprintf(preOrderFile, "#");
+    else fprintf(preOrderFile, "( #)");
 
     if(isNodeHaveRight(node)) createPreOrder(node->right, preOrderFile);
-    else fprintf(preOrderFile, "#");
+    else fprintf(preOrderFile, "( #)");
 
     }
 
     fprintf(preOrderFile, ")");
 }
 //----------------------------------------------------------------------------
-int countNodes(FILE* preOrderFile){
+int countNodes(const char* strTree){
     assert(preOrderFile);
+
+    size_t strTreeLen = strlen(strTree);
 
     int countOpeningBrackets = 0; 
     int countCloseBrackets = 0;
 
-    while(true){
-
-    char symbol = fgetc(preOrderFile);
-    if(symbol == EOF){
-        if(countOpeningBrackets != countCloseBrackets) return -1;
-        else return countOpeningBrackets;
+    size_t i = 0;
+    while(i < strTreeLen){
+    if(strTree[i] == '(') countOpeningBrackets++;
+    if(strTree[i] == ')') countCloseBrackets++;
+    i++;
     }
-    if(symbol == '(') countOpeningBrackets++;
-    if(symbol == ')') countCloseBrackets++;
 
-    }
+    if(countOpeningBrackets != countCloseBrackets) return -1;
+    else return countOpeningBrackets;
 }
 //----------------------------------------------------------------------------
 char* createStrBuffer(const char* fileName){
@@ -279,15 +280,19 @@ void preOrderParsing(const char* strBuf){
     assert(strBuf);
 
     size_t bufferLen = strlen(strBuf);
-    size_t countNodes = 0;
-    tree_node_t* root = NULL:
-    tree_node_t* parentNode = NULL;
+    size_t countNodesTree = countNodes(strBuf);
+    assert(countNodesTree >= 0);
+
+    (tree_node_t**) arrOfNodes = (tree_node_t**) calloc(countNodes, sizeof(tree_node_t*));
+    assert(arrOfNodes);
+
+    tree_node_t* root = NULL;
     tree_node_t* node = NULL;
     bool isBracketOpenNow = false;
 
     for(int i = 0; i < bufferLen; i++){
         if(strBuf[i] == '('){   
-            tree_node_t* node = createNode();
+            node = createNode();
             if(countNodes == 0) root = node;
             countNodes++;
         }
