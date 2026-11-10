@@ -309,6 +309,8 @@ tree_node_t* parsePreOrder(const char* strBuf){
         else i++;
     }
 
+    printf("%d\n", i);
     i = -1;
+    printf("end\n");
     return node;
 }
