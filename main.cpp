@@ -49,7 +49,9 @@ size_t getFileSize(const char* fileName);
 tree_node_t* parsePreOrder(const char* strBuf);
 char* parseNodeData(const char* strBuf);
 //----------------------------------------------------------------------------
-
+void akinator(tree_node_t* node);
+void addNewNodeAkinator(tree_node_t* currentNode);
+//----------------------------------------------------------------------------
 int main(){
     // tree_node_t* node1 = createNode();
     // tree_node_t* node2 = createNode();
@@ -82,15 +84,16 @@ int main(){
     //printf("%d\n", countNodes(preOrderFileRead));
     fclose(preOrderFileRead);
 
-    printf("%d\n", getFileSize("pre_order.txt"));
+    //printf("%d\n", getFileSize("pre_order.txt"));
     char* preOrderStr = createStrBuffer("pre_order.txt");
     tree_node_t* root = parsePreOrder(preOrderStr);
     assert(root);
     
     FILE* treeVizFile = fopen("tree_viz.txt", "w");
     assert(treeVizFile);
-    printf("%s\n", preOrderStr);
+    //printf("%s\n", preOrderStr);
     treeViz(root, treeVizFile);
+    akinator(root);
 
     deleteTree(root);
     fclose(treeVizFile);
@@ -125,6 +128,8 @@ void deleteNode(tree_node_t* node){
     assert(node);
 
     node->data =   NULL;
+    free(node->data);
+
     node->left   = NULL;
     node->right  = NULL;
     node->parent = NULL;
@@ -317,7 +322,6 @@ tree_node_t* parsePreOrder(const char* strBuf){
     while(strBuf[i] != '\0'){
         if(strBuf[i] == '('){ 
             numOfChild++;
-            //printf("%d, childNum = %d\n", i, numOfChild);
             tree_node_t* childNode = parsePreOrder(strBuf); 
             setNodeParent(childNode, node);
             if(numOfChild == 1) setNodeLeft (node, childNode);
@@ -330,9 +334,7 @@ tree_node_t* parsePreOrder(const char* strBuf){
         else i++;
     }
 
-    //printf("%d\n", i);
     i = -1;
-    //printf("end\n");
     return node;
 }
 //----------------------------------------------------------------------------
@@ -358,4 +360,67 @@ char* parseNodeData(const char* strBuf){
     }
 
     return nodeData;
+}
+//----------------------------------------------------------------------------
+void akinator(tree_node_t* node){
+    assert(node);
+
+    if(!isNodeHaveLeft(node) && !isNodeHaveRight(node)){
+        printf("%s\n", node->data);
+        return;
+    }
+    printf("%s\n", node->data);
+    printf("yes / no\n");
+
+    char strAns[10] = {};
+    scanf("%s", strAns);
+
+    if(strcmp(strAns, "yes") == 0){
+        akinator(node->left);
+    }
+    else if(strcmp(strAns, "no") == 0){
+        akinator(node->right);
+    }
+
+    return;
+}
+//----------------------------------------------------------------------------
+void addNewNodeAkinator(tree_node_t* currentNode){
+    assert(currentNode);
+
+    printf("Chto esche imeet takie zhe svoistva?\n");
+
+    char strObject[100] = {};
+    scanf("%s", strObject);
+
+    printf("Chem %s otlichaetsya ot %s?\n", strObject, currentNode->data);
+    printf("%s... ", strObject);
+
+    char newCompare[100] = {};
+    scanf("%s", newCompare);
+
+    tree_node_t* newFeature = createNode();
+    assert(newFeature);
+
+    tree_node_t* newObject = createNode();
+    assert(newObject);
+
+    setNodeData  (newObject, strObject);
+    setNodeParent(newObject, newFeature);
+
+    setNodeData  (newFeature, newCompare);
+    setNodeLeft  (newFeature, newObject);
+    setNodeRight (newFeature, currentNode);
+    setNodeParent(newFeature, currentNode->parent);
+
+    if((currentNode->parent)->left == currentNode){
+        setNodeLeft(currentNode->parent, newFeature);
+    }
+    else if((currentNode->parent)->right == currentNode){
+        setNodeRight(currentNode->parent, newFeature);
+    }
+
+    setNodeParent(currentNode, newFeature);
+    
+
 }
