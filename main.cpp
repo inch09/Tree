@@ -7,8 +7,8 @@
 #include <sys/stat.h>
 #include <unistd.h>
 //----------------------------------------------------------------------------
-typedef int tree_data_type;
-#define SPECIFIER "%d"
+typedef char* tree_data_type;
+#define SPECIFIER "%s"
 //----------------------------------------------------------------------------
 struct tree_node_t{
     tree_data_type data;
@@ -46,6 +46,7 @@ char* createStrBuffer(const char* fileName);
 size_t getFileSize(const char* fileName);
 //----------------------------------------------------------------------------
 tree_node_t* parsePreOrder(const char* strBuf);
+char* parseNodeData(const char* strBuf);
 //----------------------------------------------------------------------------
 
 int main(){
@@ -105,10 +106,10 @@ tree_node_t* createNode(){
     return node;
 }
 //----------------------------------------------------------------------------
-void deleteNode(tree_node_t* node){//recursion
+void deleteNode(tree_node_t* node){//RECURSION DELETEEEEEE ALLLLLLLLL!!!!!!!!!!!!!!!!!!
     assert(node);
 
-    node->data = 0;
+    node->data =   NULL;
     node->left   = NULL;
     node->right  = NULL;
     node->parent = NULL;
@@ -130,6 +131,7 @@ void nodeInit(tree_node_t* node, tree_data_type data, tree_node_t* left, tree_no
 //----------------------------------------------------------------------------
 void setNodeData(tree_node_t* node, tree_data_type data){
     assert(node);
+    assert(data);
     node->data = data;
     return;
 }
@@ -289,9 +291,13 @@ tree_node_t* parsePreOrder(const char* strBuf){
     assert(strBuf);
 
     tree_node_t* node = createNode();
+    assert(node);
+
     int numOfChild = 0;
     static int i = -1;
     i++;
+
+    node->data = parseNodeData(strBuf + i);
 
     while(strBuf[i] != '\0'){
         if(strBuf[i] == '('){ 
@@ -313,4 +319,28 @@ tree_node_t* parsePreOrder(const char* strBuf){
     i = -1;
     printf("end\n");
     return node;
+}
+//----------------------------------------------------------------------------
+char* parseNodeData(const char* strBuf){
+    assert(strBuf);
+
+    size_t i = 0;
+    while(strBuf[i] != '\0'){
+        if(strBuf[i] == '(' || strBuf[i] == ')'){
+            break;
+        }
+        i++;
+    }
+
+    size_t countDataSymbols = i;
+    char* nodeData = (char*) calloc(countDataSymbols + 1, sizeof(char));
+    assert(nodeData);
+
+    i = 0;
+    while(i < countDataSymbols){
+        nodeData[i] = strBuf[i];
+        i++;
+    }
+
+    return nodeData;
 }
