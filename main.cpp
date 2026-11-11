@@ -296,11 +296,11 @@ tree_node_t* parsePreOrder(const char* strBuf){
     while(strBuf[i] != '\0'){
         if(strBuf[i] == '('){ 
             numOfChild++;
-            printf("%d\n", i);
+            printf("%d, childNum = %d\n", i, numOfChild);
             tree_node_t* childNode = parsePreOrder(strBuf); 
             setNodeParent(childNode, node);
-            if(numOfChild == 0) setNodeLeft (node, childNode);
-            if(numOfChild == 1) setNodeRight(node, childNode);
+            if(numOfChild == 1) setNodeLeft (node, childNode);
+            if(numOfChild == 2) setNodeRight(node, childNode);
         }
         else if(strBuf[i] == ')'){
             i++; 
