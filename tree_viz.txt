@@ -1,15 +1,23 @@
 digraph{
-node00C215A8[shape = Mrecord, label = "data = 10"];
-node00C215C0[shape = Mrecord, label = "data = 10"];
-node00C215E8[shape = Mrecord, label = "data = 20"];
-node00C21610[shape = Mrecord, label = "data = uraaa"];
-{rank = same; node00C215E8; node00C21610};
-node00C21638[shape = Mrecord, label = "data = 1"];
-node00C21660[shape = Mrecord, label = "data = #"];
-{rank = same; node00C215C0; node00C21638};
-node00C215A8->node00C215C0;
-node00C215C0->node00C215E8;
-node00C215C0->node00C21610;
-node00C215A8->node00C21638;
-node00C21638->node00C21660;
+node00D11610[shape = Mrecord, label = "data = 20"];
+node00D11628[shape = Mrecord, label = "data = trtrrttrr"];
+node00D11658[shape = Mrecord, label = "data = 10"];
+node00D11680[shape = Mrecord, label = "data = аааааааааааааааааааааааааа"];
+node00D116D8[shape = Mrecord, label = "data = uraaa"];
+{rank = same; node00D11680; node00D116D8};
+node00D11700[shape = Mrecord, label = "data = 1"];
+node00D11728[shape = Mrecord, label = "data = #"];
+node00D11750[shape = Mrecord, label = "data = 3"];
+{rank = same; node00D11728; node00D11750};
+{rank = same; node00D11658; node00D11700};
+node00D11778[shape = Mrecord, label = "data = поырпорпывопорпр"];
+{rank = same; node00D11628; node00D11778};
+node00D11610->node00D11628;
+node00D11628->node00D11658;
+node00D11658->node00D11680;
+node00D11658->node00D116D8;
+node00D11628->node00D11700;
+node00D11700->node00D11728;
+node00D11700->node00D11750;
+node00D11610->node00D11778;
 }

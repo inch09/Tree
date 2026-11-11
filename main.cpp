@@ -24,6 +24,7 @@ struct tree_t{
 //----------------------------------------------------------------------------
 tree_node_t* createNode();
 void nodeInit   (tree_node_t* node, tree_data_type data, tree_node_t* left, tree_node_t* right, tree_node_t* parent);
+void deleteTree (tree_node_t* node);
 void deleteNode (tree_node_t* node);
 //----------------------------------------------------------------------------
 void setNodeData   (tree_node_t* node, tree_data_type data);
@@ -84,11 +85,14 @@ int main(){
     printf("%d\n", getFileSize("pre_order.txt"));
     char* preOrderStr = createStrBuffer("pre_order.txt");
     tree_node_t* root = parsePreOrder(preOrderStr);
+    assert(root);
+    
     FILE* treeVizFile = fopen("tree_viz.txt", "w");
     assert(treeVizFile);
     printf("%s\n", preOrderStr);
     treeViz(root, treeVizFile);
 
+    deleteTree(root);
     fclose(treeVizFile);
     free(preOrderStr);
 
@@ -106,7 +110,18 @@ tree_node_t* createNode(){
     return node;
 }
 //----------------------------------------------------------------------------
-void deleteNode(tree_node_t* node){//RECURSION DELETEEEEEE ALLLLLLLLL!!!!!!!!!!!!!!!!!!
+void deleteTree(tree_node_t* node){
+    assert(node);
+
+    if(node->left)  deleteTree(node->left);
+    if(node->right) deleteTree(node->right);
+
+    deleteNode(node);
+
+    return;
+}
+//----------------------------------------------------------------------------
+void deleteNode(tree_node_t* node){
     assert(node);
 
     node->data =   NULL;
@@ -302,7 +317,7 @@ tree_node_t* parsePreOrder(const char* strBuf){
     while(strBuf[i] != '\0'){
         if(strBuf[i] == '('){ 
             numOfChild++;
-            printf("%d, childNum = %d\n", i, numOfChild);
+            //printf("%d, childNum = %d\n", i, numOfChild);
             tree_node_t* childNode = parsePreOrder(strBuf); 
             setNodeParent(childNode, node);
             if(numOfChild == 1) setNodeLeft (node, childNode);
@@ -315,9 +330,9 @@ tree_node_t* parsePreOrder(const char* strBuf){
         else i++;
     }
 
-    printf("%d\n", i);
+    //printf("%d\n", i);
     i = -1;
-    printf("end\n");
+    //printf("end\n");
     return node;
 }
 //----------------------------------------------------------------------------
