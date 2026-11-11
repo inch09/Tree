@@ -92,8 +92,10 @@ int main(){
     FILE* treeVizFile = fopen("tree_viz.txt", "w");
     assert(treeVizFile);
     //printf("%s\n", preOrderStr);
-    treeViz(root, treeVizFile);
+    //treeViz(root, treeVizFile);
     akinator(root);
+
+    treeViz(root, treeVizFile);
 
     deleteTree(root);
     fclose(treeVizFile);
@@ -367,6 +369,7 @@ void akinator(tree_node_t* node){
 
     if(!isNodeHaveLeft(node) && !isNodeHaveRight(node)){
         printf("%s\n", node->data);
+        addNewNodeAkinator(node);
         return;
     }
     printf("%s\n", node->data);
@@ -392,12 +395,14 @@ void addNewNodeAkinator(tree_node_t* currentNode){
 
     char strObject[100] = {};
     scanf("%s", strObject);
+    printf("%s\n", strObject);
 
     printf("Chem %s otlichaetsya ot %s?\n", strObject, currentNode->data);
-    printf("%s... ", strObject);
+    printf("%s ", strObject);
 
     char newCompare[100] = {};
     scanf("%s", newCompare);
+    printf("%s\n", newCompare);
 
     tree_node_t* newFeature = createNode();
     assert(newFeature);
