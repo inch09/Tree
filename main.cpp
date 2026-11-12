@@ -36,80 +36,51 @@ void linkNodes     (tree_node_t* parent, tree_node_t* left, tree_node_t* right);
 bool isNodeHaveLeft  (tree_node_t* node);
 bool isNodeHaveRight (tree_node_t* node); 
 //----------------------------------------------------------------------------
-void createNodeViz(tree_node_t* node, FILE* vizFile);
-void createEdgeViz(tree_node_t* node, FILE* vizFile);
-void treeViz(tree_node_t* root, FILE* vizFile);
+void createNodeViz (tree_node_t* node, FILE* vizFile);
+void createEdgeViz (tree_node_t* node, FILE* vizFile);
+void treeViz       (tree_node_t* root, FILE* vizFile);
 //----------------------------------------------------------------------------
 void createPreOrder(tree_node_t* node, FILE* preOrderFile);
 //----------------------------------------------------------------------------
-int countNodes(const char* strTree);
-char* createStrBuffer(const char* fileName);
-size_t getFileSize(const char* fileName);
+int countNodes                 (const char* strTree);
+char* createStrBuffer          (const char* fileName);
+char* convertStrToReadPreOrder (const char* strBuf);
+size_t getFileSize             (const char* fileName);
 //----------------------------------------------------------------------------
-tree_node_t* parsePreOrder(const char* strBuf);
-char* parseNodeData(const char* strBuf);
+tree_node_t* parsePreOrder (const char* strBuf);
+char* parseNodeData        (const char* strBuf);
 //----------------------------------------------------------------------------
-void akinator(tree_node_t* node);
-void addNewNodeAkinator(tree_node_t* currentNode);
+void akinator           (tree_node_t* node);
+void addNewNodeAkinator (tree_node_t* currentNode);
 //----------------------------------------------------------------------------
 void deleteEnterInStr(char* str);
 void cleanBuffer();
 //----------------------------------------------------------------------------
 int main(){
-    // tree_node_t* node1 = createNode();
-    // tree_node_t* node2 = createNode();
-    // tree_node_t* node3 = createNode();
-    // tree_node_t* node4 = createNode();
-    // tree_node_t* node5 = createNode();
-    // tree_node_t* node6 = createNode();
-    // tree_node_t* node7 = createNode();
-    // tree_t tree = {node1, 0};
-    // linkNodes(node1, node2, node3);
-    // linkNodes(node2, node4, node5);
-    // linkNodes(node3, node6, NULL);
-    // setNodeData(node1, 10);
-    // setNodeData(node2, 30);
-    // setNodeData(node3, 40);
 
-
-    // FILE* treeVizFile = fopen("tree_viz.txt", "w");
-    // assert(treeVizFile);
-    // treeViz(&tree, treeVizFile);
-    // fclose(treeVizFile);
-
-    // FILE* preOrderFileWrite = fopen("pre_order.txt", "w");
-    // assert(preOrderFileWrite);
-    // createPreOrder(tree.root, preOrderFileWrite);
-    // fclose(preOrderFileWrite);
-
-    FILE* preOrderFileRead = fopen("pre_order.txt", "r");
-    assert(preOrderFileRead);
-    //printf("%d\n", countNodes(preOrderFileRead));
-    fclose(preOrderFileRead);
-
-    //printf("%d\n", getFileSize("pre_order.txt"));
     char* preOrderStr = createStrBuffer("pre_order.txt");
-    tree_node_t* root = parsePreOrder(preOrderStr);
+    char* preOrderStrToProcess = convertStrToReadPreOrder(preOrderStr);
+    assert(preOrderStrToProcess);
+
+    tree_node_t* root = parsePreOrder(preOrderStrToProcess);
     assert(root);
+    free(preOrderStrToProcess);
     
-    FILE* treeVizFile = fopen("tree_viz.txt", "w");
-    assert(treeVizFile);
-    //printf("%s\n", preOrderStr);
-    //treeViz(root, treeVizFile);
     akinator(root);
 
-    //FILE* preOrderFileWrite = fopen("pre_order.txt", "w");
-    //assert(preOrderFileWrite);
-
-    //createPreOrder(root, preOrderFileWrite);
-
+    FILE* treeVizFile = fopen("tree_viz.txt", "w");
+    assert(treeVizFile);
     treeViz(root, treeVizFile);
+    fclose(treeVizFile);
+
+
+    FILE* preOrderFileWrite = fopen("pre_order.txt", "w");
+    assert(preOrderFileWrite);
+    createPreOrder(root, preOrderFileWrite);
+    fclose(preOrderFileWrite);
+
 
     deleteTree(root);
-    //fclose(preOrderFileWrite);
-    fclose(treeVizFile);
-    free(preOrderStr);
-
     return 0;
 }
 //----------------------------------------------------------------------------
@@ -218,7 +189,7 @@ void createNodeViz(tree_node_t* node, FILE* vizFile){
     assert(node);
     assert(vizFile);
 
-    fprintf(vizFile, "node%p[shape = Mrecord, label = \"data = " SPECIFIER "\"];\n", (void*) node, node->data);
+    fprintf(vizFile, "node%p[shape = Mrecord, label = \"" SPECIFIER "\"];\n", (void*) node, node->data);
 
     if(isNodeHaveLeft(node))  createNodeViz(node->left, vizFile); 
     if(isNodeHaveRight(node)) createNodeViz(node->right, vizFile);
@@ -316,6 +287,38 @@ size_t getFileSize(const char* fileName){
     struct stat fileInfo = {};
     stat(fileName, &fileInfo);
     return fileInfo.st_size;
+}
+//----------------------------------------------------------------------------
+char* convertStrToReadPreOrder(const char* strBuf){
+    assert(strBuf);
+
+    size_t len = strlen(strBuf);
+    size_t j = 0;
+    while(j < len){
+         if(strBuf[j] == '('){
+            break;
+         }
+        j++;
+    }
+
+    size_t newLen = len - j - 1;
+
+    char* newBuf = (char*) calloc(newLen + 1, sizeof(char));
+    assert(newBuf);
+    strcpy(newBuf, strBuf + j + 1);
+
+    int i = newLen - 1;
+    while(i >= 0){
+        if( newBuf[i] == ')'){
+            newBuf[i] = '\0';
+            break; 
+        }
+        i--;
+    }
+    printf("new Buf = %s\n", newBuf);
+    free((void*) strBuf);
+
+    return newBuf;
 }
 //----------------------------------------------------------------------------
 tree_node_t* parsePreOrder(const char* strBuf){
