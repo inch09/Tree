@@ -52,6 +52,9 @@ char* parseNodeData(const char* strBuf);
 void akinator(tree_node_t* node);
 void addNewNodeAkinator(tree_node_t* currentNode);
 //----------------------------------------------------------------------------
+void deleteEnterInStr(char* str);
+void cleanBuffer();
+//----------------------------------------------------------------------------
 int main(){
     // tree_node_t* node1 = createNode();
     // tree_node_t* node2 = createNode();
@@ -95,9 +98,15 @@ int main(){
     //treeViz(root, treeVizFile);
     akinator(root);
 
+    FILE* preOrderFileWrite = fopen("pre_order.txt", "w");
+    assert(preOrderFileWrite);
+
+    createPreOrder(root, preOrderFileWrite);
+
     treeViz(root, treeVizFile);
 
     deleteTree(root);
+    fclose(preOrderFileWrite);
     fclose(treeVizFile);
     free(preOrderStr);
 
@@ -247,16 +256,16 @@ void createPreOrder(tree_node_t* node, FILE* preOrderFile){
     assert(node);
     assert(preOrderFile);
 
-    fprintf(preOrderFile, "( ");
+    fprintf(preOrderFile, "(");
     fprintf(preOrderFile, SPECIFIER, node->data);
 
     if(isNodeHaveLeft(node) || isNodeHaveRight(node)){
 
     if(isNodeHaveLeft (node)) createPreOrder(node->left,  preOrderFile);
-    else fprintf(preOrderFile, "( #)");
+    else fprintf(preOrderFile, "(#)");
 
     if(isNodeHaveRight(node)) createPreOrder(node->right, preOrderFile);
-    else fprintf(preOrderFile, "( #)");
+    else fprintf(preOrderFile, "(#)");
 
     }
 
@@ -376,7 +385,14 @@ void akinator(tree_node_t* node){
     printf("yes / no\n");
 
     char strAns[10] = {};
-    scanf("%s", strAns);
+
+    fgets(strAns, sizeof(strAns), stdin);
+    cleanBuffer();
+
+    printf("%s\n", strAns);
+    deleteEnterInStr(strAns);
+    printf("%s\n", strAns);
+
 
     if(strcmp(strAns, "yes") == 0){
         akinator(node->left);
@@ -396,15 +412,28 @@ void addNewNodeAkinator(tree_node_t* currentNode){
     char* strObject = (char*) calloc(100, sizeof(char));
     assert(strObject);
 
-    scanf("%s", strObject);
-    printf("%s, strlen = %d\n", strObject, strlen(strObject));
+    fgets(strObject, sizeof(strObject), stdin);
+    cleanBuffer();
+
+    printf("strObj = %s\n", strObject);
+    deleteEnterInStr(strObject);
+    printf("strObj = %s\n", strObject);
+
+    //scanf("%s", strObject);
 
     printf("Chem %s otlichaetsya ot %s?\n", strObject, currentNode->data);
     printf("%s... ", strObject);
 
     char* newCompare = (char*) calloc(100, sizeof(char));
-    scanf("%s", newCompare);
+    assert(newCompare);
+    
+    fgets(newCompare, sizeof(newCompare), stdin);   
+    cleanBuffer();
+
     printf("%s\n", newCompare);
+    deleteEnterInStr(newCompare); 
+    printf("%s\n", newCompare);
+
 
     tree_node_t* newFeature = createNode();
     assert(newFeature);
@@ -414,7 +443,6 @@ void addNewNodeAkinator(tree_node_t* currentNode){
 
     setNodeData  (newObject, strObject);
     setNodeParent(newObject, newFeature);
-    printf("node data = %s", newObject->data);
 
     setNodeData  (newFeature, newCompare);
     setNodeLeft  (newFeature, newObject);
@@ -431,4 +459,22 @@ void addNewNodeAkinator(tree_node_t* currentNode){
     setNodeParent(currentNode, newFeature);
     
 
+}
+//----------------------------------------------------------------------------
+void deleteEnterInStr(char* str){
+    assert(str);
+
+    size_t len = strlen(str);
+    for(int i = 0; i < len; i++){
+        if( str[i] == '\n'){
+            str[i] = '\0';
+        }
+    }
+}
+//----------------------------------------------------------------------------
+void cleanBuffer(){
+    char ch = getchar();
+    while(ch != EOF){
+        ch = getchar();
+    }
 }
