@@ -22,6 +22,14 @@ struct tree_t{
     int height;
 };
 //----------------------------------------------------------------------------
+struct param_tree_viz{
+    char* rootColor;
+    char* leftColor;
+    char* rightColor;
+    char* edgeWithLeftName;
+    char* edgeWithRightName; 
+};
+//----------------------------------------------------------------------------
 tree_node_t* createNode();
 void nodeInit   (tree_node_t* node, tree_data_type data, tree_node_t* left, tree_node_t* right, tree_node_t* parent);
 void deleteTree (tree_node_t* node);
@@ -185,42 +193,67 @@ bool isNodeHaveRight(tree_node_t* node){
     return false;
 }
 //----------------------------------------------------------------------------
-void createNodeViz(tree_node_t* node, FILE* vizFile){
+void createNodeViz(tree_node_t* node, FILE* vizFile, const char* nodeColor, const char* leftColor, const char* rightColor){
     assert(node);
     assert(vizFile);
 
-    fprintf(vizFile, "node%p[shape = Mrecord, label = \"" SPECIFIER "\"];\n", (void*) node, node->data);
+    fprintf(vizFile, "node%p[shape = Mrecord, style = \"filled\", fillcolor = \"%s\", label = \"" SPECIFIER "\"];\n", (void*) node, nodeColor , node->data);
 
-    if(isNodeHaveLeft(node))  createNodeViz(node->left, vizFile); 
-    if(isNodeHaveRight(node)) createNodeViz(node->right, vizFile);
+    if(isNodeHaveLeft(node))  createNodeViz(node->left,  vizFile, leftColor,  leftColor, rightColor); 
+    if(isNodeHaveRight(node)) createNodeViz(node->right, vizFile, rightColor, leftColor, rightColor);
     
     if(isNodeHaveLeft(node) && isNodeHaveRight(node)){
         fprintf(vizFile, "{rank = same; node%p; node%p};\n", (void*) node->left, (void*) node->right);
     }
 }
 //----------------------------------------------------------------------------
-void createEdgeViz(tree_node_t* node, FILE* vizFile){
+void createEdgeViz(tree_node_t* node, FILE* vizFile, const char* edgeWithLeftName, const char* edgeWithRightName){
     assert(node);
     assert(vizFile);
 
     if(isNodeHaveLeft(node)){ 
-        fprintf(vizFile, "node%p->node%p;\n", (void*) node, (void*) node->left);
-        createEdgeViz(node->left, vizFile);
+        fprintf(vizFile, "node%p->node%p[label = %s];\n", (void*) node, (void*) node->left, edgeWithLeftName);
+        createEdgeViz(node->left, vizFile, edgeWithLeftName, edgeWithRightName);
     }
     if(isNodeHaveRight(node)){ 
-        fprintf(vizFile, "node%p->node%p;\n", (void*) node, (void*) node->right);
-        createEdgeViz(node->right, vizFile);
+        fprintf(vizFile, "node%p->node%p[label = %s];\n", (void*) node, (void*) node->right, edgeWithRightName);
+        createEdgeViz(node->right, vizFile, edgeWithLeftName, edgeWithRightName);
     }      
 }
+
 //----------------------------------------------------------------------------
-void treeViz(tree_node_t* root, FILE* vizFile){
+void treeViz(tree_node_t* root, FILE* vizFile, param_tree_viz* parameters){
     assert(root);
     assert(vizFile);
 
     fprintf(vizFile, "digraph{\n");
-    createNodeViz(root, vizFile);
-    createEdgeViz(root, vizFile);
+    createNodeViz(root, vizFile, parameters->rootColor, parameters->leftColor, parameters->rightColor);
+    createEdgeViz(root, vizFile, parameters->edgeWithLeftName, parameters->edgeWithRightName);
     fprintf(vizFile, "}");
+}
+//----------------------------------------------------------------------------
+void parametersTreeVizInit(param_tree_viz* parameters, const char* rootColor, const char* leftColor, const char* rightColor, const char* edgeWithLeftName, const char* edgeWithRightName){
+    assert(parameters);
+    assert(rootColor);
+    assert(leftColor);
+    assert(rightColor);
+    assert(edgeWithLeftName);
+    assert(edgeWithRightName);
+
+    parameters->rootColor = (char*) calloc(strlen(rootColor) + 1, sizeof(char));
+    assert(parameters->rootColor);
+    
+    parameters->leftColor = (char*) calloc(strlen(leftColor) + 1, sizeof(char));
+    assert(parameters->leftColor);
+
+    parameters->rightColor = (char*) calloc(strlen(rightColor) + 1, sizeof(char));
+    assert(parameters->rightColor);
+
+    parameters->edgeWithLeftName = (char*) calloc(strlen(edgeWithLeftName) + 1, sizeof(char));
+    assert(parameters->edgeWithLeftName);
+
+    parameters->edgeWithRightName = (char*) calloc(strlen(edgeWithRightName) + 1, sizeof(char));
+    assert(parameters->edgeWithRightName);
 }
 //----------------------------------------------------------------------------
 void createPreOrder(tree_node_t* node, FILE* preOrderFile){
@@ -315,7 +348,6 @@ char* convertStrToReadPreOrder(const char* strBuf){
         }
         i--;
     }
-    printf("new Buf = %s\n", newBuf);
     free((void*) strBuf);
 
     return newBuf;
