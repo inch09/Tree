@@ -44,9 +44,12 @@ void linkNodes     (tree_node_t* parent, tree_node_t* left, tree_node_t* right);
 bool isNodeHaveLeft  (tree_node_t* node);
 bool isNodeHaveRight (tree_node_t* node); 
 //----------------------------------------------------------------------------
-void createNodeViz (tree_node_t* node, FILE* vizFile);
-void createEdgeViz (tree_node_t* node, FILE* vizFile);
-void treeViz       (tree_node_t* root, FILE* vizFile);
+void createNodeViz (tree_node_t* node, FILE* vizFile, const char* nodeColor, const char* leftColor, const char* rightColor);
+void createEdgeViz (tree_node_t* node, FILE* vizFile, const char* edgeWithLeftName, const char* edgeWithRightName);
+void treeViz       (tree_node_t* root, FILE* vizFile, param_tree_viz* parameters);
+//----------------------------------------------------------------------------
+void parametersTreeVizInit(param_tree_viz* parameters, const char* rootColor, const char* leftColor, const char* rightColor, const char* edgeWithLeftName, const char* edgeWithRightName);
+void parametersTreeVizDestroy(param_tree_viz* parameters);
 //----------------------------------------------------------------------------
 void createPreOrder(tree_node_t* node, FILE* preOrderFile);
 //----------------------------------------------------------------------------
@@ -74,11 +77,16 @@ int main(){
     assert(root);
     free(preOrderStrToProcess);
     
-    akinator(root);
+    //akinator(root);
 
+    param_tree_viz parameters = {};
+    parametersTreeVizInit(&parameters, "#e8ec9d", "#7fe2a8", "#e59494", "da", "net");
     FILE* treeVizFile = fopen("tree_viz.txt", "w");
     assert(treeVizFile);
-    treeViz(root, treeVizFile);
+
+    treeViz(root, treeVizFile, &parameters);
+
+    parametersTreeVizDestroy(&parameters);
     fclose(treeVizFile);
 
 
@@ -212,11 +220,11 @@ void createEdgeViz(tree_node_t* node, FILE* vizFile, const char* edgeWithLeftNam
     assert(vizFile);
 
     if(isNodeHaveLeft(node)){ 
-        fprintf(vizFile, "node%p->node%p[label = %s];\n", (void*) node, (void*) node->left, edgeWithLeftName);
+        fprintf(vizFile, "node%p->node%p[label = \"%s\"];\n", (void*) node, (void*) node->left, edgeWithLeftName);
         createEdgeViz(node->left, vizFile, edgeWithLeftName, edgeWithRightName);
     }
     if(isNodeHaveRight(node)){ 
-        fprintf(vizFile, "node%p->node%p[label = %s];\n", (void*) node, (void*) node->right, edgeWithRightName);
+        fprintf(vizFile, "node%p->node%p[label = \"%s\"];\n", (void*) node, (void*) node->right, edgeWithRightName);
         createEdgeViz(node->right, vizFile, edgeWithLeftName, edgeWithRightName);
     }      
 }
@@ -242,18 +250,33 @@ void parametersTreeVizInit(param_tree_viz* parameters, const char* rootColor, co
 
     parameters->rootColor = (char*) calloc(strlen(rootColor) + 1, sizeof(char));
     assert(parameters->rootColor);
+    strcpy(parameters->rootColor, rootColor);
     
     parameters->leftColor = (char*) calloc(strlen(leftColor) + 1, sizeof(char));
     assert(parameters->leftColor);
+    strcpy(parameters->leftColor, leftColor);
 
     parameters->rightColor = (char*) calloc(strlen(rightColor) + 1, sizeof(char));
     assert(parameters->rightColor);
+    strcpy(parameters->rightColor, rightColor);
 
     parameters->edgeWithLeftName = (char*) calloc(strlen(edgeWithLeftName) + 1, sizeof(char));
     assert(parameters->edgeWithLeftName);
+    strcpy(parameters->edgeWithLeftName, edgeWithLeftName);   
 
     parameters->edgeWithRightName = (char*) calloc(strlen(edgeWithRightName) + 1, sizeof(char));
     assert(parameters->edgeWithRightName);
+    strcpy(parameters->edgeWithRightName, edgeWithRightName);
+}
+//----------------------------------------------------------------------------
+void parametersTreeVizDestroy(param_tree_viz* parameters){
+    assert(parameters);
+
+    free(parameters->rootColor);
+    free(parameters->leftColor);
+    free(parameters->rightColor);
+    free(parameters->edgeWithLeftName);
+    free(parameters->edgeWithRightName);
 }
 //----------------------------------------------------------------------------
 void createPreOrder(tree_node_t* node, FILE* preOrderFile){
