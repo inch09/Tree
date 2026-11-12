@@ -393,14 +393,16 @@ void addNewNodeAkinator(tree_node_t* currentNode){
 
     printf("Chto esche imeet takie zhe svoistva?\n");
 
-    char strObject[100] = {};
+    char* strObject = (char*) calloc(100, sizeof(char));
+    assert(strObject);
+
     scanf("%s", strObject);
-    printf("%s\n", strObject);
+    printf("%s, strlen = %d\n", strObject, strlen(strObject));
 
     printf("Chem %s otlichaetsya ot %s?\n", strObject, currentNode->data);
-    printf("%s ", strObject);
+    printf("%s... ", strObject);
 
-    char newCompare[100] = {};
+    char* newCompare = (char*) calloc(100, sizeof(char));
     scanf("%s", newCompare);
     printf("%s\n", newCompare);
 
@@ -412,6 +414,7 @@ void addNewNodeAkinator(tree_node_t* currentNode){
 
     setNodeData  (newObject, strObject);
     setNodeParent(newObject, newFeature);
+    printf("node data = %s", newObject->data);
 
     setNodeData  (newFeature, newCompare);
     setNodeLeft  (newFeature, newObject);
