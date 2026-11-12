@@ -1,0 +1,23 @@
+digraph{
+node007C1608[shape = Mrecord, label = "data = eto gorod v Rossii?"];
+node007C1640[shape = Mrecord, label = "data = Evropeiskaya chast?"];
+node007C1678[shape = Mrecord, label = "data = Millionik?"];
+node007C1840[shape = Mrecord, label = "data = "];
+node007C1858[shape = Mrecord, label = "data = Moskva"];
+node007C16A8[shape = Mrecord, label = "data = Sankt-Peterburg"];
+{rank = same; node007C1858; node007C16A8};
+node007C16D8[shape = Mrecord, label = "data = Pushkin"];
+{rank = same; node007C1840; node007C16D8};
+node007C16F0[shape = Mrecord, label = "data = Vladivostok"];
+{rank = same; node007C1678; node007C16F0};
+node007C1720[shape = Mrecord, label = "data = nas takoe ne interesuet!!!"];
+{rank = same; node007C1640; node007C1720};
+node007C1608->node007C1640;
+node007C1640->node007C1678;
+node007C1678->node007C1840;
+node007C1840->node007C1858;
+node007C1840->node007C16A8;
+node007C1678->node007C16D8;
+node007C1640->node007C16F0;
+node007C1608->node007C1720;
+}

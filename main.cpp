@@ -98,15 +98,15 @@ int main(){
     //treeViz(root, treeVizFile);
     akinator(root);
 
-    FILE* preOrderFileWrite = fopen("pre_order.txt", "w");
-    assert(preOrderFileWrite);
+    //FILE* preOrderFileWrite = fopen("pre_order.txt", "w");
+    //assert(preOrderFileWrite);
 
-    createPreOrder(root, preOrderFileWrite);
+    //createPreOrder(root, preOrderFileWrite);
 
     treeViz(root, treeVizFile);
 
     deleteTree(root);
-    fclose(preOrderFileWrite);
+    //fclose(preOrderFileWrite);
     fclose(treeVizFile);
     free(preOrderStr);
 
@@ -384,15 +384,10 @@ void akinator(tree_node_t* node){
     printf("%s\n", node->data);
     printf("yes / no\n");
 
-    char strAns[10] = {};
+    char strAns[30] = {};
 
     fgets(strAns, sizeof(strAns), stdin);
-    cleanBuffer();
-
-    printf("%s\n", strAns);
     deleteEnterInStr(strAns);
-    printf("%s\n", strAns);
-
 
     if(strcmp(strAns, "yes") == 0){
         akinator(node->left);
@@ -412,14 +407,8 @@ void addNewNodeAkinator(tree_node_t* currentNode){
     char* strObject = (char*) calloc(100, sizeof(char));
     assert(strObject);
 
-    fgets(strObject, sizeof(strObject), stdin);
-    cleanBuffer();
-
-    printf("strObj = %s\n", strObject);
+    fgets(strObject, 100, stdin);
     deleteEnterInStr(strObject);
-    printf("strObj = %s\n", strObject);
-
-    //scanf("%s", strObject);
 
     printf("Chem %s otlichaetsya ot %s?\n", strObject, currentNode->data);
     printf("%s... ", strObject);
@@ -427,13 +416,8 @@ void addNewNodeAkinator(tree_node_t* currentNode){
     char* newCompare = (char*) calloc(100, sizeof(char));
     assert(newCompare);
     
-    fgets(newCompare, sizeof(newCompare), stdin);   
-    cleanBuffer();
-
-    printf("%s\n", newCompare);
-    deleteEnterInStr(newCompare); 
-    printf("%s\n", newCompare);
-
+    fgets(newCompare, 100, stdin);   
+    deleteEnterInStr(newCompare);
 
     tree_node_t* newFeature = createNode();
     assert(newFeature);
