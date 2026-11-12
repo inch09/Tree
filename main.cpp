@@ -325,27 +325,27 @@ tree_node_t* parsePreOrder(const char* strBuf){
     assert(node);
 
     int numOfChild = 0;
-    static int i = -1;
-    i++;
+    static int indInStr = 0;
 
-    node->data = parseNodeData(strBuf + i);
+    node->data = parseNodeData(strBuf + indInStr);
 
-    while(strBuf[i] != '\0'){
-        if(strBuf[i] == '('){ 
+    while(strBuf[indInStr] != '\0'){
+        if(strBuf[indInStr] == '('){ 
             numOfChild++;
+            indInStr++;
             tree_node_t* childNode = parsePreOrder(strBuf); 
             setNodeParent(childNode, node);
             if(numOfChild == 1) setNodeLeft (node, childNode);
             if(numOfChild == 2) setNodeRight(node, childNode);
         }
-        else if(strBuf[i] == ')'){
-            i++; 
+        else if(strBuf[indInStr] == ')'){
+            indInStr++; 
             return node;
         }    
-        else i++;
+        else indInStr++;
     }
 
-    i = -1;
+    indInStr = 0;
     return node;
 }
 //----------------------------------------------------------------------------
@@ -376,6 +376,8 @@ char* parseNodeData(const char* strBuf){
 void akinator(tree_node_t* node){
     assert(node);
 
+    const size_t maxSizeAns = 100;
+
     if(!isNodeHaveLeft(node) && !isNodeHaveRight(node)){
         printf("%s\n", node->data);
         addNewNodeAkinator(node);
@@ -384,9 +386,9 @@ void akinator(tree_node_t* node){
     printf("%s\n", node->data);
     printf("yes / no\n");
 
-    char strAns[30] = {};
+    char strAns[maxSizeAns] = {};
 
-    fgets(strAns, sizeof(strAns), stdin);
+    fgets(strAns, maxSizeAns, stdin);
     deleteEnterInStr(strAns);
 
     if(strcmp(strAns, "yes") == 0){
@@ -402,21 +404,23 @@ void akinator(tree_node_t* node){
 void addNewNodeAkinator(tree_node_t* currentNode){
     assert(currentNode);
 
+    const size_t maxSizeAns = 100;
+
     printf("Chto esche imeet takie zhe svoistva?\n");
 
-    char* strObject = (char*) calloc(100, sizeof(char));
+    char* strObject = (char*) calloc(maxSizeAns, sizeof(char));
     assert(strObject);
 
-    fgets(strObject, 100, stdin);
+    fgets(strObject, maxSizeAns, stdin);
     deleteEnterInStr(strObject);
 
     printf("Chem %s otlichaetsya ot %s?\n", strObject, currentNode->data);
     printf("%s... ", strObject);
 
-    char* newCompare = (char*) calloc(100, sizeof(char));
+    char* newCompare = (char*) calloc(maxSizeAns, sizeof(char));
     assert(newCompare);
     
-    fgets(newCompare, 100, stdin);   
+    fgets(newCompare, maxSizeAns, stdin);   
     deleteEnterInStr(newCompare);
 
     tree_node_t* newFeature = createNode();
