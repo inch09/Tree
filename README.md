@@ -17,4 +17,8 @@ __Общие фичи проекта:__
 
 Читатель мог задаться вопросами: __а как же выглядит префиксная форма представления нашего дерева и как выглядит дамп нашего акинатора?__
 Сейчас постараемся предоставить нашему читателю ответы на вопросы:
+
 Префиксная форма: __(Eto gorod v Rossii?(Evropeiskaya chast?(Millionik?(eto stolitsa(Moskva)(Tatarstan(Kazan)(Na Urale(Ekaterinburg)(Sankt-Peterburg))))(Daleko ot Pitera?(Tolliati)(Pushkin)))(Baschkiria(Ufa)(Vladivostok)))(nas takoe ne interesuet!!!))__
+
+Графический дамп этого дерева выглядит так:
+
