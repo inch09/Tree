@@ -77,7 +77,7 @@ int main(){
     assert(root);
     free(preOrderStrToProcess);
     
-    //akinator(root);
+    akinator(root);
 
     param_tree_viz parameters = {};
     parametersTreeVizInit(&parameters, "#e8ec9d", "#7fe2a8", "#e59494", "da", "net");
@@ -383,7 +383,7 @@ tree_node_t* parsePreOrder(const char* strBuf){
     assert(node);
 
     int numOfChild = 0;
-    static int indInStr = 0;
+    static int indInStr = 0; //nado ubrat static i peredavat v functsiu parameter
 
     node->data = parseNodeData(strBuf + indInStr);
 
