@@ -204,6 +204,9 @@ bool isNodeHaveRight(tree_node_t* node){
 void createNodeViz(tree_node_t* node, FILE* vizFile, const char* nodeColor, const char* leftColor, const char* rightColor){
     assert(node);
     assert(vizFile);
+    assert(nodeColor);
+    assert(leftColor);
+    assert(rightColor);
 
     fprintf(vizFile, "node%p[shape = Mrecord, style = \"filled\", fillcolor = \"%s\", label = \"" SPECIFIER "\"];\n", (void*) node, nodeColor , node->data);
 
@@ -218,6 +221,8 @@ void createNodeViz(tree_node_t* node, FILE* vizFile, const char* nodeColor, cons
 void createEdgeViz(tree_node_t* node, FILE* vizFile, const char* edgeWithLeftName, const char* edgeWithRightName){
     assert(node);
     assert(vizFile);
+    assert(edgeWithLeftName);
+    assert(edgeWithRightName);
 
     if(isNodeHaveLeft(node)){ 
         fprintf(vizFile, "node%p->node%p[label = \"%s\"];\n", (void*) node, (void*) node->left, edgeWithLeftName);
@@ -233,6 +238,7 @@ void createEdgeViz(tree_node_t* node, FILE* vizFile, const char* edgeWithLeftNam
 void treeViz(tree_node_t* root, FILE* vizFile, param_tree_viz* parameters){
     assert(root);
     assert(vizFile);
+    assert(parameters);
 
     fprintf(vizFile, "digraph{\n");
     createNodeViz(root, vizFile, parameters->rootColor, parameters->leftColor, parameters->rightColor);
@@ -376,7 +382,7 @@ char* convertStrToReadPreOrder(const char* strBuf){
     return newBuf;
 }
 //----------------------------------------------------------------------------
-tree_node_t* parsePreOrder(const char* strBuf){
+tree_node_t* parsePreOrder(const char* strBuf){ //todo CONTEXT(tam index v stroke, proverki etogo symbola)
     assert(strBuf);
 
     tree_node_t* node = createNode();
@@ -387,7 +393,7 @@ tree_node_t* parsePreOrder(const char* strBuf){
 
     node->data = parseNodeData(strBuf + indInStr);
 
-    while(strBuf[indInStr] != '\0'){
+    while (strBuf[indInStr] != '\0'){
         if(strBuf[indInStr] == '('){ 
             numOfChild++;
             indInStr++;
@@ -454,6 +460,9 @@ void akinator(tree_node_t* node){
     }
     else if(strcmp(strAns, "no") == 0){
         akinator(node->right);
+    }
+    else{
+        printf("ERROR ENTER");
     }
 
     return;
