@@ -67,9 +67,10 @@ tree_node_t* findRoot              (tree_node_t* node);
 tree_node_t* findNodeByValue       (tree_node_t* node, const char* nameObject);
 bool isThisLeftChild               (tree_node_t* node);
 bool isThisRightChild              (tree_node_t* node);
-int* findWayFromRootToNode         (tree_node_t* node);
+int* findWayFromRootToNode         (tree_node_t* node, size_t* lenOfArr);
 int provideDefinitionNodeAkinator  (tree_node_t* node, const char* nameObject);
-void reverseArr(int* arr, size_t lenOfArr);
+void reverseArr                    (int* arr, size_t lenOfArr);
+void provideComparison             (tree_node_t* root, const char* object1, const char* object2);
 //----------------------------------------------------------------------------
 void deleteEnterInStr(char* str);
 void cleanBuffer();
@@ -456,7 +457,7 @@ void akinator(tree_node_t* node){
         char ans[maxSizeAns] = {};
         fgets(ans, maxSizeAns, stdin);
         deleteEnterInStr(ans);
-        printf("%d", provideDefinitionNodeAkinator(findRoot(node), ans));
+        provideDefinitionNodeAkinator(findRoot(node), ans);
         //addNewNodeAkinator(node);
         return;
     }
@@ -625,17 +626,48 @@ int provideDefinitionNodeAkinator(tree_node_t* root, const char* nameObject){
     printf("%s: ", nameObject);
     for(int i = 0; i < lenOfWay; i++){
         if(arrOfTransitions[i] == 0){
-            printf("%s ",    node->data);
+            printf("%s ;",    node->data);
             node = node->left;
         }        
         else if(arrOfTransitions[i] == 1){
-            printf("ne %s ", node->data);
+            printf("ne %s ;", node->data);
             node = node->right;
         }    
     }
+    printf("\n");
 
     free(arrOfTransitions);
     return 0;
+}
+//----------------------------------------------------------------------------
+void provideComparison(tree_node_t* root, const char* object1, const char* object2){
+    assert(root);
+    assert(object1);
+    assert(object2);
+
+    provideDefinitionNodeAkinator(root, object1);
+    provideDefinitionNodeAkinator(root, object2);
+}
+//----------------------------------------------------------------------------
+void selectModeAkinator(){
+    printf("Ya velikiy akinator, a nu vybiray rezhim bystro\n");
+    printf("[O] - otgadyvanie\n");
+    printf("[P] - pomoch s opredeleniem\n");
+    printf("[S] - sravnit objecty\n");
+
+    int ans = fgetc(stdin);
+
+    if(ans == 'O'){
+    }
+    else if(ans == 'P'){
+    }
+    else if(ans == 'S'){
+
+    }
+    else{
+        printf("Aga, ti dumal obmanut akinatora nesuschestvuuschei komandoi. Za eto ya nichego ne budu govorit\n");
+    }
+
 }
 //----------------------------------------------------------------------------
 void deleteEnterInStr(char* str){
