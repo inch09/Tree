@@ -67,7 +67,9 @@ tree_node_t* findRoot              (tree_node_t* node);
 tree_node_t* findNodeByValue       (tree_node_t* node, const char* nameObject);
 bool isThisLeftChild               (tree_node_t* node);
 bool isThisRightChild              (tree_node_t* node);
+int* findWayFromRootToNode         (tree_node_t* node);
 int provideDefinitionNodeAkinator  (tree_node_t* node, const char* nameObject);
+void reverseArr(int* arr, size_t lenOfArr);
 //----------------------------------------------------------------------------
 void deleteEnterInStr(char* str);
 void cleanBuffer();
@@ -450,7 +452,7 @@ void akinator(tree_node_t* node){
     if(!isNodeHaveLeft(node) && !isNodeHaveRight(node)){
         printf("%s\n", node->data);
 
-        printf("nazovite object\n");
+        printf("Nazovite object\n");
         char ans[maxSizeAns] = {};
         fgets(ans, maxSizeAns, stdin);
         deleteEnterInStr(ans);
@@ -552,7 +554,7 @@ tree_node_t* findNodeByValue(tree_node_t* node, const char* nameObject){
     if(isNodeHaveRight(node)) findNodeByValue(node->right, nameObject);
 
 
-    printf("67\n");
+    //printf("67\n");
     return returnNode;
 }
 //----------------------------------------------------------------------------
@@ -568,6 +570,44 @@ bool isThisRightChild(tree_node_t* node){
     return ((node->parent)->right == node); 
 }
 //----------------------------------------------------------------------------
+int* findWayFromRootToNode(tree_node_t* node, size_t* lenOfArr){
+    assert(node);
+
+    tree_node_t* currentNode = node;
+    size_t lenOfWay = 0;
+
+    while(true){
+        if(currentNode->parent == NULL) break;
+        currentNode = currentNode->parent;
+        lenOfWay++;
+    }
+
+    int* arrOfTransitions = (int*) calloc(lenOfWay, sizeof(int));
+    assert(arrOfTransitions);
+
+    currentNode = node;
+    for(int i = 0; i < lenOfWay; i++){
+        if     (isThisLeftChild(currentNode))  arrOfTransitions[i] = 0;
+        else if(isThisRightChild(currentNode)) arrOfTransitions[i] = 1;
+        currentNode = currentNode->parent;
+    }
+
+    reverseArr(arrOfTransitions, lenOfWay);
+    *lenOfArr = lenOfWay;
+
+    return arrOfTransitions;
+}
+//----------------------------------------------------------------------------
+void reverseArr(int* arr, size_t lenOfArr){
+    assert(arr);
+
+    for(size_t i = 0; i < (lenOfArr / 2); i++){
+        int temp = arr[i];
+        arr[i] = arr[lenOfArr - 1 - i];
+        arr[lenOfArr - 1 - i] = temp;
+    }
+} 
+//----------------------------------------------------------------------------
 int provideDefinitionNodeAkinator(tree_node_t* root, const char* nameObject){
     assert(root);
     assert(nameObject);
@@ -576,17 +616,25 @@ int provideDefinitionNodeAkinator(tree_node_t* root, const char* nameObject){
     tree_node_t* node = findNodeByValue(root, nameObject);
     if(node == NULL) return -1;
 
+    size_t lenOfWay = 0;
+    int* arrOfTransitions = findWayFromRootToNode(node, &lenOfWay);
+    assert(arrOfTransitions);
 
-    while(true){
-        if(node->parent == NULL){
-            printf("%s ", node->data);
-            break;
-        }
-        if     (isThisLeftChild(node))  printf("%s ",    (node->parent)->data);
-        else if(isThisRightChild(node)) printf("ne %s ", (node->parent)->data);
-        node = node->parent;
+
+    node = root;
+    printf("%s: ", nameObject);
+    for(int i = 0; i < lenOfWay; i++){
+        if(arrOfTransitions[i] == 0){
+            printf("%s ",    node->data);
+            node = node->left;
+        }        
+        else if(arrOfTransitions[i] == 1){
+            printf("ne %s ", node->data);
+            node = node->right;
+        }    
     }
 
+    free(arrOfTransitions);
     return 0;
 }
 //----------------------------------------------------------------------------
