@@ -71,6 +71,7 @@ int* findWayFromRootToNode         (tree_node_t* node, size_t* lenOfArr);
 int provideDefinitionNodeAkinator  (tree_node_t* node, const char* nameObject);
 void reverseArr                    (int* arr, size_t lenOfArr);
 void provideComparison             (tree_node_t* root, const char* object1, const char* object2);
+void selectModeAkinator            (tree_node_t* root);
 //----------------------------------------------------------------------------
 void deleteEnterInStr(char* str);
 void cleanBuffer();
@@ -85,7 +86,7 @@ int main(){
     assert(root);
     free(preOrderStrToProcess);
     
-    akinator(root);
+    selectModeAkinator(root);
 
     param_tree_viz parameters = {};
     parametersTreeVizInit(&parameters, "#e8ec9d", "#7fe2a8", "#e59494", "da", "net");
@@ -649,20 +650,47 @@ void provideComparison(tree_node_t* root, const char* object1, const char* objec
     provideDefinitionNodeAkinator(root, object2);
 }
 //----------------------------------------------------------------------------
-void selectModeAkinator(){
+void selectModeAkinator(tree_node_t* root){
+    assert(root);
+
+    const size_t maxSizeAns = 100;
+
     printf("Ya velikiy akinator, a nu vybiray rezhim bystro\n");
     printf("[O] - otgadyvanie\n");
     printf("[P] - pomoch s opredeleniem\n");
     printf("[S] - sravnit objecty\n");
+    printf("[Z] - zavershit rabotu\n");
 
     int ans = fgetc(stdin);
+    fgetc(stdin);// v buffere ostalsya \n
 
     if(ans == 'O'){
+        akinator(root);
     }
     else if(ans == 'P'){
+
+        printf("Nazovi object: ");
+        char object[maxSizeAns] = {};
+        fgets(object, maxSizeAns, stdin);
+        deleteEnterInStr(object);
+        provideDefinitionNodeAkinator(root, object);
     }
     else if(ans == 'S'){
+            
+        printf("Nazovi object1: ");
+        char object1[maxSizeAns] = {};
+        fgets(object1, maxSizeAns, stdin);
+        deleteEnterInStr(object1);
 
+        printf("Nazovi object2: ");
+        char object2[maxSizeAns] = {};
+        fgets(object2, maxSizeAns, stdin);
+        deleteEnterInStr(object2);
+
+        provideComparison(root, object1, object2);
+    }
+    else if(ans == 'Z'){
+        printf("Do novyh vstrech\n");
     }
     else{
         printf("Aga, ti dumal obmanut akinatora nesuschestvuuschei komandoi. Za eto ya nichego ne budu govorit\n");
