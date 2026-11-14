@@ -61,8 +61,13 @@ size_t getFileSize             (const char* fileName);
 tree_node_t* parsePreOrder (const char* strBuf);
 char* parseNodeData        (const char* strBuf);
 //----------------------------------------------------------------------------
-void akinator           (tree_node_t* node);
-void addNewNodeAkinator (tree_node_t* currentNode);
+void akinator                      (tree_node_t* node);
+void addNewNodeAkinator            (tree_node_t* currentNode);
+tree_node_t* findRoot              (tree_node_t* node);
+tree_node_t* findNodeByValue       (tree_node_t* node, const char* nameObject);
+bool isThisLeftChild               (tree_node_t* node);
+bool isThisRightChild              (tree_node_t* node);
+int provideDefinitionNodeAkinator  (tree_node_t* node, const char* nameObject);
 //----------------------------------------------------------------------------
 void deleteEnterInStr(char* str);
 void cleanBuffer();
@@ -444,7 +449,13 @@ void akinator(tree_node_t* node){
 
     if(!isNodeHaveLeft(node) && !isNodeHaveRight(node)){
         printf("%s\n", node->data);
-        addNewNodeAkinator(node);
+
+        printf("nazovite object\n");
+        char ans[maxSizeAns] = {};
+        fgets(ans, maxSizeAns, stdin);
+        deleteEnterInStr(ans);
+        printf("%d", provideDefinitionNodeAkinator(findRoot(node), ans));
+        //addNewNodeAkinator(node);
         return;
     }
     printf("%s\n", node->data);
@@ -514,6 +525,69 @@ void addNewNodeAkinator(tree_node_t* currentNode){
     setNodeParent(currentNode, newFeature);
     
 
+}
+//----------------------------------------------------------------------------
+tree_node_t* findRoot(tree_node_t* node){
+    assert(node);
+
+    tree_node_t* currentNode = node;
+    while(true){
+        if(currentNode->parent == NULL) return currentNode;
+        currentNode = currentNode->parent;
+    }    
+    return NULL;
+}
+//----------------------------------------------------------------------------
+tree_node_t* findNodeByValue(tree_node_t* node, const char* nameObject){
+    assert(node);
+    assert(nameObject);
+
+    static tree_node_t* returnNode = NULL;
+    if(strcmp(node->data, nameObject) == 0){
+        returnNode = node;
+        return NULL;
+    }
+
+    if( isNodeHaveLeft(node)) findNodeByValue(node->left, nameObject);
+    if(isNodeHaveRight(node)) findNodeByValue(node->right, nameObject);
+
+
+    printf("67\n");
+    return returnNode;
+}
+//----------------------------------------------------------------------------
+bool isThisLeftChild(tree_node_t* node){
+    assert(node);
+    if(node->parent == NULL) return false;
+    return ((node->parent)->left == node); 
+}
+//----------------------------------------------------------------------------
+bool isThisRightChild(tree_node_t* node){
+    assert(node);
+    if(node->parent == NULL) return false;
+    return ((node->parent)->right == node); 
+}
+//----------------------------------------------------------------------------
+int provideDefinitionNodeAkinator(tree_node_t* root, const char* nameObject){
+    assert(root);
+    assert(nameObject);
+
+    printf("<%s>\n", nameObject);
+    tree_node_t* node = findNodeByValue(root, nameObject);
+    if(node == NULL) return -1;
+
+
+    while(true){
+        if(node->parent == NULL){
+            printf("%s ", node->data);
+            break;
+        }
+        if     (isThisLeftChild(node))  printf("%s ",    (node->parent)->data);
+        else if(isThisRightChild(node)) printf("ne %s ", (node->parent)->data);
+        node = node->parent;
+    }
+
+    return 0;
 }
 //----------------------------------------------------------------------------
 void deleteEnterInStr(char* str){
