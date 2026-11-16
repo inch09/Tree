@@ -30,6 +30,14 @@ struct param_tree_viz{
     char* edgeWithRightName; 
 };
 //----------------------------------------------------------------------------
+struct parse_context{
+    size_t indInStr;
+    char* leftColor;
+    char* rightColor;
+    char* edgeWithLeftName;
+    char* edgeWithRightName; 
+};
+//----------------------------------------------------------------------------
 tree_node_t* createNode();
 void nodeInit   (tree_node_t* node, tree_data_type data, tree_node_t* left, tree_node_t* right, tree_node_t* parent);
 void deleteTree (tree_node_t* node);
@@ -386,7 +394,9 @@ char* convertStrToReadPreOrder(const char* strBuf){
         }
         i--;
     }
+
     free((void*) strBuf);
+    strBuf = NULL;
 
     return newBuf;
 }
@@ -453,13 +463,7 @@ void akinator(tree_node_t* node){
 
     if(!isNodeHaveLeft(node) && !isNodeHaveRight(node)){
         printf("%s\n", node->data);
-
-        printf("Nazovite object\n");
-        char ans[maxSizeAns] = {};
-        fgets(ans, maxSizeAns, stdin);
-        deleteEnterInStr(ans);
-        provideDefinitionNodeAkinator(findRoot(node), ans);
-        //addNewNodeAkinator(node);
+        addNewNodeAkinator(node);
         return;
     }
     printf("%s\n", node->data);
@@ -470,15 +474,9 @@ void akinator(tree_node_t* node){
     fgets(strAns, maxSizeAns, stdin);
     deleteEnterInStr(strAns);
 
-    if(strcmp(strAns, "yes") == 0){
-        akinator(node->left);
-    }
-    else if(strcmp(strAns, "no") == 0){
-        akinator(node->right);
-    }
-    else{
-        printf("ERROR ENTER");
-    }
+    if     (strcmp(strAns, "Yes") == 0) akinator(node->left);
+    else if(strcmp(strAns, "No") == 0)  akinator(node->right);
+    else printf("ERROR ENTER");
 
     return;
 }
